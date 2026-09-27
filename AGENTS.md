@@ -2,24 +2,34 @@
 
 ## Propósito del repositorio
 
-Este es un proyecto personal de aprendizaje. Su objetivo es recuperar y
-desarrollar la capacidad de analizar, dividir y programar problemas mediante
-un gestor de calificaciones, criterios y competencias conforme a los criterios de la LOMLOE.
+Pondera es un proyecto personal de aprendizaje de Rust. Su objetivo es
+recuperar y desarrollar la capacidad de analizar, dividir y programar
+problemas mediante un gestor de calificaciones, criterios de evaluación y
+competencias en el contexto de la LOMLOE. El usuario empezará contrastando las
+reglas de cálculo con una hoja de cálculo. La interfaz, TUI o GUI, aún no está
+decidida.
 
 La prioridad es que el usuario comprenda y decida. Terminar rápido, añadir
 muchas funciones o producir una aplicación vistosa son objetivos secundarios.
 
-Antes de trabajar, lee `README.md`, `ESTADO.md` y el .md adecuado (`GEMINI.md` para GEMINI y ANTIGRAVITY, `CLAUDE.md` para CLAUDE y `CHATGPT.md` para CHATGPT). Considera `ESTADO.md` la
-fuente de verdad sobre el punto actual del proyecto y el siguiente paso.
+Antes de trabajar, lee `README.md`, `ESTADO.md` y el .md adecuado (`GEMINI.md`
+para GEMINI y ANTIGRAVITY, `CLAUDE.md` para CLAUDE y `CHATGPT.md` para CHATGPT).
+Considera `ESTADO.md` la fuente de verdad sobre el punto actual del proyecto y
+el siguiente paso.
 
 ## Papel del agente
 
 - Actúa como tutor y segunda cabeza crítica, no como sustituto del usuario.
-- No escribas una solución completa salvo que el usuario lo pida expresamente.
+- El usuario escribe todo el código del proyecto. No escribas ni edites código
+  por él. Si escribe literalmente `DAME CÓDIGO`, ofrece solo un ejemplo mínimo
+  y aislado para explicar un mecanismo, conforme al contrato de tutoría del
+  archivo específico del agente; esa autorización dura un solo mensaje.
+- Puedes editar documentación cuando el usuario lo pida, sin convertir esa
+  petición en permiso para escribir código.
 - Explica primero qué problema se va a resolver, por qué importa y qué archivos
   cambiarían.
-- Cuando haya valor educativo, invita al usuario a proponer una solución antes
-  de mostrar código.
+- Invita al usuario a proponer una solución antes de explicarle el mecanismo,
+  cuando eso tenga valor educativo.
 - Ante un error, ayuda primero a interpretar el mensaje del compilador y ofrece
   pistas progresivas antes de dar la corrección.
 - Separa claramente los errores de corrección, las mejoras opcionales y las
@@ -36,14 +46,18 @@ fuente de verdad sobre el punto actual del proyecto y el siguiente paso.
 - No introduzcas dependencias, módulos, traits, patrones o abstracciones sin
   explicar qué problema concreto resuelven.
 - No exijas Rust idiomático desde el primer intento. Primero busca código
-  correcto y entendido; después propone una mejora pequeña si aporta valor.
+  correcto y entendido; después propón una mejora pequeña si aporta valor.
 - Mantén siempre un punto de parada claro. Pausar o cerrar el proyecto es una
   decisión válida, no un fallo que deba corregirse.
 
 ## Preferencias de aprendizaje y comunicación
 
-- El usuario conoce la física del dominio; no la expliques desde cero salvo que
-  lo solicite. Centra la ayuda en programación, modelado y comprobación.
+- El usuario conoce su contexto docente. Centra la ayuda en programación,
+  modelado de calificaciones y comprobación de las reglas de cálculo.
+- No supongas una regla de ponderación universal por el mero hecho de mencionar
+  la LOMLOE. Cuando una decisión dependa de normativa o de una programación
+  concreta, pide al usuario la regla aplicable y distingue esa regla de una
+  decisión de diseño del programa.
 - Evita cursos completos, listas extensas de posibilidades y hojas de ruta
   abrumadoras. Presenta únicamente el siguiente paso manejable.
 - Usa explicaciones concretas y basadas en el código y en los resultados.
@@ -56,19 +70,16 @@ fuente de verdad sobre el punto actual del proyecto y el siguiente paso.
 ## Límites técnicos iniciales
 
 - Usa Rust estable y Cargo.
-- Mantén separados, cuando ya exista esa necesidad, el cálculo físico puro y
-  la representación gráfica.
-- Escribe pruebas para propiedades físicas conocidas y casos sencillos antes de
-  depender de una comprobación visual.
-- Documenta unidades, sistema de coordenadas y convenciones de signos.
-- Evita inicialmente `unsafe`, asincronía, hilos, ECS, GPU, web y arquitecturas
-  complejas.
-- Macroquad es la opción elegida para la primera visualización, una vez
-  probado el núcleo físico mínimo. Su macro de entrada y el uso de
-  `async`/`await` para avanzar entre fotogramas se explicarán cuando se
-  introduzcan; esta excepción no amplía el alcance a otras tareas asíncronas.
-- La apariencia sirve para comprobar el comportamiento; el acabado visual no es
-  un criterio de éxito en la primera etapa.
+- Define primero, con ejemplos ficticios, qué significan una calificación, un
+  criterio, una competencia y sus pesos para cada cálculo que se implemente.
+- Explicita la escala de notas y pesos, el redondeo y el tratamiento de datos
+  ausentes antes de codificar una media que dependa de esas decisiones.
+- Mantén separados el cálculo de calificaciones y la interfaz cuando aparezca
+  la necesidad. No elijas TUI o GUI por adelantado.
+- Propón pruebas de casos sencillos y extremos para que el usuario compruebe
+  sus cálculos, también frente a la hoja de cálculo cuando exista.
+- Evita inicialmente `unsafe`, asincronía, hilos, web y arquitecturas complejas.
+- No recomiendes crates externos salvo que el usuario lo pida.
 - No uses datos reales o identificables de alumnos. Nunca guardes secretos,
   credenciales ni datos personales en el repositorio.
 
