@@ -1,9 +1,9 @@
 # Estado de Pondera
 
-**Fecha:** 2026-09-27
+**Fecha:** 2026-10-01
 
-**Fase actual:** modelado de los datos que Pondera debe conservar; el proyecto
-binario de Cargo ya está creado.
+**Fase actual:** elección de cómo acceder a SQLite desde Rust; todavía no hay
+almacenamiento implementado.
 
 ## Decisiones y hechos comprobados
 
@@ -53,17 +53,23 @@ binario de Cargo ya está creado.
   la respuesta está pendiente.
 - El usuario quiere abordar el registro, lectura y modificación de
   calificaciones y ponderaciones antes de seguir con la implementación de
-  medias. Aún no se ha elegido un formato de almacenamiento.
+  medias. Se ha elegido SQLite como formato de almacenamiento.
 - Se propuso identificar cada PR por evaluación y número de prueba, registrar
   su fecha y guardar una nota con dos decimales y una anotación opcional por
-  alumno. Se explicó la conveniencia de separar los datos compartidos de la
-  prueba de cada resultado individual. Esa separación aún no se ha acordado ni
-  implementado; tampoco se ha definido cómo identificar al alumno.
+  alumno. Los campos definitivos siguen pendientes.
+- Se acordó separar los datos de cada alumno, los datos compartidos de cada PR
+  y el resultado de un alumno en esa PR. Los datos del alumno son comunes a
+  todos los instrumentos: con dos PR se guardan una vez y hay dos resultados.
+  Aún no se ha definido cómo identificar al alumno ni se ha implementado el
+  modelo.
+- El usuario eligió SQLite tras comparar su uso con archivos CSV. SQLite no
+  necesita un servidor aparte. Aún no se ha elegido la biblioteca de acceso
+  desde Rust ni se ha decidido si se usará una ORM.
 
 ## Siguiente paso
 
-Confirmar la separación entre los datos compartidos de una PR y el resultado
-de cada alumno, usando un único ejemplo ficticio.
+Decidir si el acceso inicial a SQLite desde Rust será directo o mediante una
+ORM, atendiendo al objetivo de aprendizaje del proyecto.
 
 ## Fuera del alcance actual
 
@@ -77,3 +83,8 @@ de cada alumno, usando un único ejemplo ficticio.
   se revisaron las reglas de la tabla de 2.º de ESO. Quedó pendiente la
   respuesta del departamento sobre el cálculo final. La sesión terminó al
   empezar a definir los datos de una PR y de cada alumno.
+- 2026-10-01: se confirmó con un ejemplo ficticio que los datos de un alumno
+  se guardan una vez y cada PR realizada produce un resultado propio. El
+  usuario aclaró que su pregunta principal era cómo guardar los datos; la
+  comparación con CSV llevó a elegir SQLite. Queda pendiente decidir cómo
+  acceder a él desde Rust.
