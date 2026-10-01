@@ -2,8 +2,8 @@
 
 **Fecha:** 2026-10-01
 
-**Fase actual:** elección de cómo acceder a SQLite desde Rust; todavía no hay
-almacenamiento implementado.
+**Fase actual:** primer acceso a SQLite desde Rust; falta poder enlazar la
+biblioteca y comprobar una apertura real.
 
 ## Decisiones y hechos comprobados
 
@@ -14,11 +14,14 @@ almacenamiento implementado.
   generó únicamente el andamiaje inicial de Cargo.
 - La elección entre TUI y GUI sigue abierta. La hoja de cálculo servirá como
   referencia inicial para contrastar los cálculos.
-- `Cargo.toml` declara un paquete binario llamado `pondera`, sin dependencias.
-  `src/main.rs` contiene solo el programa de ejemplo generado por Cargo y
-  `.gitignore` excluye `target`. Cargo generó también `Cargo.lock`.
-- Pasan `cargo fmt --check`, `cargo check`, `cargo test` (aún sin pruebas) y
-  `cargo clippy`.
+- `Cargo.toml` declara el paquete binario `pondera` y la dependencia
+  `rusqlite` 0.40.2; `Cargo.lock` se actualizó. `.gitignore` excluye `target`.
+- `src/main.rs` conserva el programa de ejemplo y contiene una función
+  `open_db` aún sin llamar. La función descarta el resultado de la apertura y
+  devuelve éxito aunque SQLite no haya abierto el archivo.
+- Pasan `cargo fmt --check`, `cargo check` y `cargo clippy`; los dos últimos
+  avisan de una variable sin usar y de que `open_db` no se llama. `cargo test`
+  falla al enlazar porque falta `-lsqlite3` en este entorno.
 - `README.md` presenta el proyecto. Aún no se ha implementado ninguna función
   de calificaciones.
 - Se trabajará solo con datos ficticios.
@@ -62,20 +65,21 @@ almacenamiento implementado.
   todos los instrumentos: con dos PR se guardan una vez y hay dos resultados.
   Aún no se ha definido cómo identificar al alumno ni se ha implementado el
   modelo.
-- El usuario eligió SQLite tras comparar su uso con archivos CSV. SQLite no
-  necesita un servidor aparte. Aún no se ha elegido la biblioteca de acceso
-  desde Rust ni se ha decidido si se usará una ORM.
+- El usuario eligió SQLite tras comparar su uso con archivos CSV y decidió
+  empezar con acceso directo mediante SQL. SQLite no necesita un servidor
+  aparte. Ha añadido `rusqlite` como biblioteca de acceso desde Rust.
 
 ## Siguiente paso
 
-Decidir si el acceso inicial a SQLite desde Rust será directo o mediante una
-ORM, atendiendo al objetivo de aprendizaje del proyecto.
+Resolver el enlazado de SQLite en este entorno y repetir `cargo test`, antes
+de comprobar la función de apertura.
 
 ## Fuera del alcance actual
 
 - Elegir e implementar la interfaz.
 - Añadir métricas adicionales antes de definir y comprobar el cálculo básico.
 - Recuperaciones y casos excepcionales de redondeo.
+- Considerar una ORM si el acceso directo resulta repetitivo más adelante.
 
 ## Registro de sesiones
 
@@ -86,5 +90,7 @@ ORM, atendiendo al objetivo de aprendizaje del proyecto.
 - 2026-10-01: se confirmó con un ejemplo ficticio que los datos de un alumno
   se guardan una vez y cada PR realizada produce un resultado propio. El
   usuario aclaró que su pregunta principal era cómo guardar los datos; la
-  comparación con CSV llevó a elegir SQLite. Queda pendiente decidir cómo
-  acceder a él desde Rust.
+  comparación con CSV llevó a elegir SQLite. Después se eligió el acceso
+  directo mediante SQL para la primera versión. El usuario añadió `rusqlite`
+  y una primera función de apertura; la compilación de pruebas reveló que
+  falta la biblioteca SQLite necesaria para enlazar en este entorno.
