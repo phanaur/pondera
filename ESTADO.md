@@ -2,8 +2,8 @@
 
 **Fecha:** 2026-10-09
 
-**Fase actual:** primer uso de SQLite desde Rust; se creó un archivo de prueba
-y falta comprobar el resultado de la apertura.
+**Fase actual:** apertura de SQLite y creación de la primera tabla de alumnos
+desde Rust, con comprobación de los resultados de ambas operaciones.
 
 ## Decisiones y hechos comprobados
 
@@ -17,13 +17,23 @@ y falta comprobar el resultado de la apertura.
 - `Cargo.toml` declara el paquete binario `pondera` y la dependencia
   `rusqlite` 0.40.2 con la opción `bundled`; `Cargo.lock` se actualizó.
   `.gitignore` excluye `target`.
-- `src/main.rs` intenta abrir `/tmp/pondera-prueba.sqlite` desde `main`, pero
-  guarda e ignora el resultado de `Connection::open`; por ello no comunica un
-  error si la apertura falla. El archivo de prueba apareció en `/tmp`, vacío
-  porque aún no se han creado tablas ni escrito datos.
-- Pasan `cargo fmt --check`, `cargo check`, `cargo test` y `cargo clippy`.
-  `cargo test` ejecuta cero pruebas. Persisten advertencias por la importación
-  de `Result` y la variable `db` sin usar.
+- `src/main.rs` abre `/tmp/pondera-prueba.sqlite` desde `main` y examina el
+  `Result` de `Connection::open` mediante `match`. Si la apertura funciona,
+  envía una instrucción `CREATE TABLE alumnos` mediante `execute` y examina
+  también su resultado. Ambas operaciones muestran un mensaje de éxito o el
+  error recibido.
+- El usuario ejecutó `cargo run` y obtuvo «Base abierta» y «Tabla creada».
+  Una inspección posterior en modo de lectura confirmó que la base contiene
+  la tabla `alumnos` con `numero INTEGER PRIMARY KEY`, `nombre TEXT`,
+  `apellidos TEXT` y `curso TEXT`. Aún no se ha implementado la inserción de
+  alumnos ni se ha comprobado guardar y recuperar sus datos.
+- En el código final pasan `cargo fmt --check` y `cargo check`, sin
+  advertencias. El usuario sustituyó por `Ok(_)` la captura del número de
+  filas modificadas que no utilizaba. Las pruebas y Clippy pasaron en la
+  revisión anterior; no se han repetido para este cambio. Aquella ejecución
+  de `cargo test` tenía cero pruebas.
+- La instrucción actual utiliza `CREATE TABLE` sin `IF NOT EXISTS`: si la
+  tabla ya existe, la creación devuelve un error que el programa muestra.
 - `README.md` presenta el proyecto. Aún no se ha implementado ninguna función
   de calificaciones.
 - Se trabajará solo con datos ficticios.
@@ -65,16 +75,22 @@ y falta comprobar el resultado de la apertura.
 - Se acordó separar los datos de cada alumno, los datos compartidos de cada PR
   y el resultado de un alumno en esa PR. Los datos del alumno son comunes a
   todos los instrumentos: con dos PR se guardan una vez y hay dos resultados.
-  Aún no se ha definido cómo identificar al alumno ni se ha implementado el
-  modelo.
+  La primera tabla de alumnos utiliza un identificador entero como clave
+  primaria. Las tablas de pruebas y resultados siguen pendientes.
+- Los datos iniciales del alumno son nombre, apellidos y curso. El curso
+  representa el nivel educativo, como 2.º de ESO, y se guarda como texto.
+- Un mismo alumno puede cursar Matemáticas y Conocimiento de las Matemáticas.
+  Se explicó un diseño con una tabla de asignaturas y otra de matrículas que
+  relaciona alumnos con asignaturas; esas dos tablas aún no se han implementado.
 - El usuario eligió SQLite tras comparar su uso con archivos CSV y decidió
   empezar con acceso directo mediante SQL. SQLite no necesita un servidor
   aparte. Ha añadido `rusqlite` como biblioteca de acceso desde Rust.
 
 ## Siguiente paso
 
-Explicar desde cero qué significa crear una tabla SQLite y cómo se relaciona
-con la base de prueba, antes de pedir al usuario que escriba más código.
+Explicar `CREATE TABLE IF NOT EXISTS` para que el usuario adapte la creación
+de `alumnos` y compruebe que puede ejecutar el programa dos veces sin error
+por la existencia previa de la tabla.
 
 ## Fuera del alcance actual
 
@@ -101,3 +117,11 @@ con la base de prueba, antes de pedir al usuario que escriba más código.
   de prueba desde `main`, aunque aún se ignora el resultado de la operación.
   Se acordó retomar las explicaciones de SQL y `rusqlite` desde cero antes de
   continuar con la implementación.
+- 2026-10-09 (segunda sesión): se explicó la separación entre alumnos y
+  matrículas, la estructura de una tabla y la instrucción `CREATE TABLE`.
+  El usuario escribió la definición de `alumnos` y la ejecutó desde Rust,
+  comprobando apertura y creación con `match`. Se trabajó el valor de la
+  última expresión de un bloque y el uso de `Ok(_)`. La ejecución y la
+  inspección de SQLite confirmaron la creación; el código final pasa formato
+  y compilación sin advertencias. Queda retomar la creación cuando la tabla
+  ya existe.
