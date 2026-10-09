@@ -1,11 +1,6 @@
 use rusqlite::{Connection, Result};
 
 fn main() {
-    println!("Hello, world!");
-}
-
-fn open_db(path: String) -> Result<()> {
+    let path: String = String::from("/tmp/pondera-prueba.sqlite");
     let db = Connection::open(path);
-
-    Ok(())
 }

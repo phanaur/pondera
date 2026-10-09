@@ -1,9 +1,9 @@
 # Estado de Pondera
 
-**Fecha:** 2026-10-01
+**Fecha:** 2026-10-09
 
-**Fase actual:** primer acceso a SQLite desde Rust; falta poder enlazar la
-biblioteca y comprobar una apertura real.
+**Fase actual:** primer uso de SQLite desde Rust; se creó un archivo de prueba
+y falta comprobar el resultado de la apertura.
 
 ## Decisiones y hechos comprobados
 
@@ -15,13 +15,15 @@ biblioteca y comprobar una apertura real.
 - La elección entre TUI y GUI sigue abierta. La hoja de cálculo servirá como
   referencia inicial para contrastar los cálculos.
 - `Cargo.toml` declara el paquete binario `pondera` y la dependencia
-  `rusqlite` 0.40.2; `Cargo.lock` se actualizó. `.gitignore` excluye `target`.
-- `src/main.rs` conserva el programa de ejemplo y contiene una función
-  `open_db` aún sin llamar. La función descarta el resultado de la apertura y
-  devuelve éxito aunque SQLite no haya abierto el archivo.
-- Pasan `cargo fmt --check`, `cargo check` y `cargo clippy`; los dos últimos
-  avisan de una variable sin usar y de que `open_db` no se llama. `cargo test`
-  falla al enlazar porque falta `-lsqlite3` en este entorno.
+  `rusqlite` 0.40.2 con la opción `bundled`; `Cargo.lock` se actualizó.
+  `.gitignore` excluye `target`.
+- `src/main.rs` intenta abrir `/tmp/pondera-prueba.sqlite` desde `main`, pero
+  guarda e ignora el resultado de `Connection::open`; por ello no comunica un
+  error si la apertura falla. El archivo de prueba apareció en `/tmp`, vacío
+  porque aún no se han creado tablas ni escrito datos.
+- Pasan `cargo fmt --check`, `cargo check`, `cargo test` y `cargo clippy`.
+  `cargo test` ejecuta cero pruebas. Persisten advertencias por la importación
+  de `Result` y la variable `db` sin usar.
 - `README.md` presenta el proyecto. Aún no se ha implementado ninguna función
   de calificaciones.
 - Se trabajará solo con datos ficticios.
@@ -71,8 +73,8 @@ biblioteca y comprobar una apertura real.
 
 ## Siguiente paso
 
-Resolver el enlazado de SQLite en este entorno y repetir `cargo test`, antes
-de comprobar la función de apertura.
+Explicar desde cero qué significa crear una tabla SQLite y cómo se relaciona
+con la base de prueba, antes de pedir al usuario que escriba más código.
 
 ## Fuera del alcance actual
 
@@ -94,3 +96,8 @@ de comprobar la función de apertura.
   directo mediante SQL para la primera versión. El usuario añadió `rusqlite`
   y una primera función de apertura; la compilación de pruebas reveló que
   falta la biblioteca SQLite necesaria para enlazar en este entorno.
+- 2026-10-09: el usuario activó `bundled` en `rusqlite`; `cargo test` enlaza y
+  pasa. Se descartó la función auxiliar `open_db`; el usuario abrió un archivo
+  de prueba desde `main`, aunque aún se ignora el resultado de la operación.
+  Se acordó retomar las explicaciones de SQL y `rusqlite` desde cero antes de
+  continuar con la implementación.
